@@ -5,42 +5,157 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Grok Bot Galaxy Day 1 — Recap</title>
 <style>
-:root { --bg:#0b0f14; --panel:#121821; --text:#e7ecf3; --muted:#9aa7b8; --accent:#7dd3fc; --border:#243041; }
-* { box-sizing:border-box; }
-body { margin:0; font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
-header { padding:2rem 1.25rem 1rem; border-bottom:1px solid var(--border); background:linear-gradient(180deg,#152033,var(--bg)); }
-header h1 { margin:0 0 .5rem; font-size:1.55rem; }
-header p { margin:.25rem 0; color:var(--muted); font-size:.95rem; }
-header a { color:var(--accent); }
-main { max-width:920px; margin:0 auto; padding:1.25rem; }
-.meta,.report { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; margin:1rem 0 1.5rem; }
-.meta ul { margin:.4rem 0 0; padding-left:1.2rem; color:var(--muted); }
-.report h1 { font-size:1.35rem; border-bottom:1px solid var(--border); padding-bottom:.35rem; }
-.report h2 { font-size:1.15rem; margin-top:1.6rem; color:#c7e7ff; }
-.report h3 { font-size:1.02rem; margin-top:1.2rem; color:#d7e3f2; }
-.report code { font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:#0a1018; padding:.1em .35em; border-radius:4px; }
-.report pre { overflow-x:auto; background:#0a1018; padding:.85rem 1rem; border-radius:8px; border:1px solid var(--border); }
-.report table { width:100%; border-collapse:collapse; font-size:.9rem; display:block; overflow-x:auto; }
-.report th,.report td { border:1px solid var(--border); padding:.4rem .55rem; text-align:left; vertical-align:top; }
-.report th { background:#0a1018; }
-.report hr { border:0; border-top:1px solid var(--border); margin:1.5rem 0; }
-footer { max-width:920px; margin:0 auto 2rem; padding:0 1.25rem; color:var(--muted); font-size:.85rem; }
+:root {
+  --bg: #0b0f14;
+  --panel: #121821;
+  --text: #e7ecf3;
+  --muted: #9aa7b8;
+  --accent: #7dd3fc;
+  --accent-2: #a7f3d0;
+  --border: #243041;
+  --chip: #1a2433;
+  --sidebar: 280px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: var(--accent); }
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 40;
+}
+.top {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(11,15,20,.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.top-inner {
+  max-width: 1280px; margin: 0 auto;
+  padding: .7rem 1.1rem .55rem;
+  display: flex; gap: .75rem; flex-wrap: wrap; align-items: baseline;
+}
+.brand { font-weight: 700; color: var(--text); text-decoration: none; }
+.top-inner nav { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .9rem; }
+.top-inner .muted { color: var(--muted); font-size: .86rem; }
+.chips {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 1.1rem .7rem;
+  display: flex; gap: .4rem; overflow-x: auto;
+}
+.chips a {
+  flex: 0 0 auto;
+  text-decoration: none;
+  color: var(--muted);
+  background: var(--chip);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .2rem .7rem;
+  font-size: .82rem;
+}
+.chips a:hover, .chips a.active {
+  color: #082018;
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+.layout {
+  max-width: 1280px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 1rem 1.1rem 3rem;
+}
+.layout > * { min-width: 0; }
+#toc {
+  position: sticky; top: 5.4rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .85rem .9rem;
+}
+#toc > summary { margin: 0 0 .5rem; font-size: .82rem; color: var(--muted); letter-spacing: .04em; font-weight: 700; }
+#toc details { margin: .15rem 0; }
+#toc summary { cursor: pointer; list-style: none; }
+#toc summary::-webkit-details-marker { display: none; }
+#toc a {
+  display: block; text-decoration: none; color: var(--text);
+  font-size: .86rem; padding: .18rem 0;
+}
+#toc li a { color: var(--muted); font-size: .8rem; padding: .12rem 0 .12rem .2rem; }
+#toc ul { margin: .15rem 0 .35rem; padding-left: .9rem; }
+#toc a:hover { color: var(--accent); }
+.report {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem 2rem;
+}
+.report, #toc { overflow-wrap: anywhere; word-break: break-word; }
+.report h1 { font-size: 1.35rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
+.report h2 { font-size: 1.12rem; margin-top: 1.6rem; color: #c7e7ff; }
+.report h3 { font-size: 1.02rem; margin-top: 1.2rem; color: #d7e3f2; }
+.report code { font-family: ui-monospace, Menlo, monospace; font-size: .88em; background: #0a1018; padding: .1em .35em; border-radius: 4px; word-break: break-all; }
+.report pre { overflow-x: auto; background: #0a1018; padding: .85rem 1rem; border-radius: 8px; border: 1px solid var(--border); }
+.report table { width: 100%; border-collapse: collapse; font-size: .9rem; display: block; overflow-x: auto; }
+.report th, .report td { border: 1px solid var(--border); padding: .4rem .55rem; text-align: left; vertical-align: top; }
+.report th { background: #0a1018; }
+.report hr { border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.to-top {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 20;
+  background: var(--chip); color: var(--text); border: 1px solid var(--border);
+  border-radius: 999px; padding: .45rem .8rem; text-decoration: none; font-size: .85rem;
+}
+footer { max-width: 1280px; margin: 0 auto 2rem; padding: 0 1.25rem; color: var(--muted); font-size: .85rem; }
+@media (max-width: 920px) {
+  .layout { grid-template-columns: 1fr; }
+  #toc { position: relative; top: 0; max-height: none; }
+  #toc[open], #toc details { max-height: none; }
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>Grok Bot Galaxy Day 1 — Recap</h1>
-  <p>音声付き完走レポート</p>
-  <p>ソース: <a href="https://x.com/i/broadcasts/1AxRnZbVpjaxl">https://x.com/i/broadcasts/1AxRnZbVpjaxl</a></p>
+<div class="progress" id="progress"></div>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html">Grok Bot Galaxy</a>
+    <nav>
+      <a href="./index.html">Day 1</a>
+      <a href="https://x.com/i/broadcasts/1AxRnZbVpjaxl">配信ソース</a>
+      <a href="./REPORT.md">原文 Markdown</a>
+    </nav>
+    <span class="muted">約 8:45:18 ／ セグメント 01–09</span>
+  </div>
+  <nav class="chips" id="chips" aria-label="セグメント">
+    <a href="#grok-bot-galaxy-day-1-01-0000010000">01 0:00</a>
+    <a href="#grok-bot-galaxy-day-1-02-1000020000">02 1:00</a>
+    <a href="#grok-bot-galaxy-day-1-03-2000030000">03 2:00</a>
+    <a href="#grok-bot-galaxy-day-1-04-3000040000">04 3:00</a>
+    <a href="#grok-bot-galaxy-day-1-04b-3370040000">04b 3:37</a>
+    <a href="#grok-bot-galaxy-day-1-05-4000050000">05 4:00</a>
+    <a href="#grok-bot-galaxy-day-1-06-5000060000">06 5:00</a>
+    <a href="#grok-bot-galaxy-day-1-07-6000070000">07 6:00</a>
+    <a href="#grok-bot-galaxy-day-1-08-7000080000">08 7:00</a>
+    <a href="#grok-bot-galaxy-day-1-09-80000end-84518">09 8:00</a>
+  </nav>
 </header>
-<main>
-  <section class="meta">
-    <strong>メタ</strong>
-    <ul>
-      <li>長さ: 約 8:45:18</li>
-      <li>原文: <a href="./REPORT.md">REPORT.md</a></li>
-    </ul>
-  </section>
+<div class="layout">
+  <aside>
+    <details id="toc" open>
+      <summary>目次</summary>
+      <div id="toc-list"></div>
+    </details>
+  </aside>
   <article class="report">
 <h1 id="day-1-grok-bot-galaxy-livestream-recap">Day 1: Grok Bot Galaxy Livestream — 音声付き Recap 完走レポート</h1>
 <ul>
@@ -1890,7 +2005,60 @@ footer { max-width:920px; margin:0 auto 2rem; padding:0 1.25rem; color:var(--mut
 <li><strong>End-of-stream</strong>: 最終フレーム ≈8:45:57、目標 8:45:18 <strong>到達確認 OK</strong>。ブロッカーなし。</li>
 </ol>
   </article>
-</main>
-<footer>Private archive — day1</footer>
+</div>
+<a class="to-top" href="#">先頭へ</a>
+<footer>Private archive — Day 1 HTML view</footer>
+<script>
+(function () {
+  const article = document.querySelector("article.report");
+  const toc = document.getElementById("toc-list");
+  let group = null;
+  article.querySelectorAll("h1, h2").forEach(function (h) {
+    if (!h.id) return;
+    if (h.tagName === "H1") {
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      const a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.textContent
+        .replace("Grok Bot Galaxy Day 1 — ", "")
+        .replace("厚めノート", "")
+        .trim();
+      summary.appendChild(a);
+      const ul = document.createElement("ul");
+      details.appendChild(summary);
+      details.appendChild(ul);
+      toc.appendChild(details);
+      group = ul;
+    } else if (group) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.textContent;
+      li.appendChild(a);
+      group.appendChild(li);
+    }
+  });
+
+  const tocRoot = document.getElementById("toc");
+  if (tocRoot && window.innerWidth < 920) tocRoot.removeAttribute("open");
+  const chips = [...document.querySelectorAll("#chips a")];
+  const heads = chips.map(function (a) { return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
+  const progress = document.getElementById("progress");
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+    let current = heads[0];
+    heads.forEach(function (h) {
+      if (h.getBoundingClientRect().top < 140) current = h;
+    });
+    chips.forEach(function (a) {
+      a.classList.toggle("active", current && a.getAttribute("href") === "#" + current.id);
+    });
+  }
+  document.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
+</script>
 </body>
 </html>
