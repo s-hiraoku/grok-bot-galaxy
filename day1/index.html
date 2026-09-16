@@ -17,13 +17,14 @@
   --sidebar: 280px;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
   font-family: "Hiragino Sans", "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.7;
+  overflow-x: hidden;
 }
 a { color: var(--accent); }
 .progress {
@@ -72,6 +73,7 @@ a { color: var(--accent); }
   gap: 1.25rem;
   padding: 1rem 1.1rem 3rem;
 }
+.layout > * { min-width: 0; }
 #toc {
   position: sticky; top: 5.4rem;
   align-self: start;
@@ -82,7 +84,7 @@ a { color: var(--accent); }
   border-radius: 12px;
   padding: .85rem .9rem;
 }
-#toc h2 { margin: 0 0 .5rem; font-size: .82rem; color: var(--muted); letter-spacing: .04em; }
+#toc > summary { margin: 0 0 .5rem; font-size: .82rem; color: var(--muted); letter-spacing: .04em; font-weight: 700; }
 #toc details { margin: .15rem 0; }
 #toc summary { cursor: pointer; list-style: none; }
 #toc summary::-webkit-details-marker { display: none; }
@@ -99,10 +101,11 @@ a { color: var(--accent); }
   border-radius: 12px;
   padding: 1.15rem 1.25rem 2rem;
 }
+.report, #toc { overflow-wrap: anywhere; word-break: break-word; }
 .report h1 { font-size: 1.35rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
 .report h2 { font-size: 1.12rem; margin-top: 1.6rem; color: #c7e7ff; }
 .report h3 { font-size: 1.02rem; margin-top: 1.2rem; color: #d7e3f2; }
-.report code { font-family: ui-monospace, Menlo, monospace; font-size: .88em; background: #0a1018; padding: .1em .35em; border-radius: 4px; }
+.report code { font-family: ui-monospace, Menlo, monospace; font-size: .88em; background: #0a1018; padding: .1em .35em; border-radius: 4px; word-break: break-all; }
 .report pre { overflow-x: auto; background: #0a1018; padding: .85rem 1rem; border-radius: 8px; border: 1px solid var(--border); }
 .report table { width: 100%; border-collapse: collapse; font-size: .9rem; display: block; overflow-x: auto; }
 .report th, .report td { border: 1px solid var(--border); padding: .4rem .55rem; text-align: left; vertical-align: top; }
@@ -116,7 +119,8 @@ a { color: var(--accent); }
 footer { max-width: 1280px; margin: 0 auto 2rem; padding: 0 1.25rem; color: var(--muted); font-size: .85rem; }
 @media (max-width: 920px) {
   .layout { grid-template-columns: 1fr; }
-  #toc { position: relative; top: 0; max-height: 16rem; }
+  #toc { position: relative; top: 0; max-height: none; }
+  #toc[open], #toc details { max-height: none; }
 }
 </style>
 </head>
@@ -146,9 +150,11 @@ footer { max-width: 1280px; margin: 0 auto 2rem; padding: 0 1.25rem; color: var(
   </nav>
 </header>
 <div class="layout">
-  <aside id="toc">
-    <h2>目次</h2>
-    <div id="toc-list"></div>
+  <aside>
+    <details id="toc" open>
+      <summary>目次</summary>
+      <div id="toc-list"></div>
+    </details>
   </aside>
   <article class="report">
 <h1 id="day-1-grok-bot-galaxy-livestream-recap">Day 1: Grok Bot Galaxy Livestream — 音声付き Recap 完走レポート</h1>
@@ -2034,6 +2040,8 @@ footer { max-width: 1280px; margin: 0 auto 2rem; padding: 0 1.25rem; color: var(
     }
   });
 
+  const tocRoot = document.getElementById("toc");
+  if (tocRoot && window.innerWidth < 920) tocRoot.removeAttribute("open");
   const chips = [...document.querySelectorAll("#chips a")];
   const heads = chips.map(function (a) { return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
   const progress = document.getElementById("progress");
