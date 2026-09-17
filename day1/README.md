@@ -2,6 +2,10 @@
 
 Self-contained Day 1 recap with Japanese thick notes and **embedded screenshot JPEGs**.
 
+- ソース: https://x.com/i/broadcasts/1AxRnZbVpjaxl
+- 長さ: 約 8:45:18
+- Pages: https://s-hiraoku.github.io/grok-bot-galaxy/day1/
+
 ## Open locally
 
 ```bash
