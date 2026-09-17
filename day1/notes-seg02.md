@@ -173,7 +173,7 @@
 | おおよそ時刻 | ファイル例 | 見えるもの |
 |---|---|---|
 | 1:00–1:15 | `t010045_share_as_template.jpg`, `t010620_qr_code_ready.jpg` | Amrita デモ、Marketplace、コーヒー Form QR |
-| 1:15–1:29 | `t012100_qa_approvals.jpg`, `t012805_contest_starbase_qr.jpg, t012815_learnings_summary.jpg` | 会場 Q&A、まとめ学び |
+| 1:15–1:29 | `t012100_qa_approvals.jpg`, `t012805_contest_starbase_qr.jpg, `t012815_learnings_summary.jpg` | 会場 Q&A、まとめ学び |
 | ~1:30–1:31 | `t013100_learnings_slide.jpg` / BRB | Be right back |
 | 1:31–1:40 | `t013105_welcome_back_studio.jpg`, `t013625_marky_create.jpg` | スタジオ4人、Marky 作成、空の GitHub/Slack |
 | 1:43–1:56 | `t014600_marky_markface.jpg`, `t015230_popup_os.jpg` | リサーチテーマ一覧、レストラン/Pop-up OS |
@@ -187,5 +187,3 @@
 2. **休憩→スタジオ復帰**: Eng / PM / Founders セッション予告。ゲスト **Peter Yang**（Behind the Craft / 一人会社で Grok Bot）。
 3. **会社づくり再開**: ship by Thursday + Slack + Notion。最初の社員 **Marky McMarkface**（X リプライの市場調査）。テーマは非SaaS・フィジカル/ローカル寄り。
 4. **収束しつつあるアイデア**: レストラン ops / **Pop-up OS**（SF 実店＋配信ブース）。分業＝prospecting・Notion・peestack プロト・**Dr. Eggbot**。2:00 ちょうどでプロト画面へ移行中。
-
----

@@ -244,5 +244,3 @@
 2. **コンテスト**: Starbase Starship 観覧旅（優勝）、Hawthorne 工場ツアー（準優勝）。9/29、@grok/@bot、テンプレ共有。
 3. **スタック構想**: Slack+Notion(+Linear?)、Cursor、peestack、空の GitHub org **ship by Thursday**、ボット雇用計画。
 4. **Grok Bot 101 (Roman→Amrita)**: 同僚パラダイム / 自前コンピュータ / クラウド。Data Dan の Google Form＋Voice、Slide Sonya の Teach a task、Email Ethan の下書き、承認ルール、エージェント間メッセージまでライブ。
-
----
