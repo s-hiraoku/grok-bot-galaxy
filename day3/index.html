@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Grok Bot Galaxy Day 3 — 記事メモ（日本語）</title>
+<style>
+
+:root {
+  --bg: #0b0f14;
+  --panel: #121821;
+  --text: #e7ecf3;
+  --muted: #9aa7b8;
+  --accent: #7dd3fc;
+  --accent-2: #a7f3d0;
+  --border: #243041;
+  --chip: #1a2433;
+  --sidebar: 260px;
+  --measure: 72ch;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+a { color: var(--accent); }
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 40;
+}
+.top {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(11,15,20,.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.top-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: .7rem 1.1rem .55rem;
+  display: flex; gap: .75rem; flex-wrap: wrap; align-items: baseline;
+}
+.brand { font-weight: 700; color: var(--text); text-decoration: none; }
+.top-inner .muted { color: var(--muted); font-size: .86rem; }
+.chips {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 1.1rem .7rem;
+  display: flex; gap: .4rem; overflow-x: auto;
+}
+.chips a {
+  flex: 0 0 auto;
+  text-decoration: none;
+  color: var(--muted);
+  background: var(--chip);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .2rem .7rem;
+  font-size: .82rem;
+}
+.chips a:hover, .chips a.active {
+  color: #082018;
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+.layout {
+  max-width: 1100px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 1rem 1.1rem 3rem;
+}
+.layout > * { min-width: 0; }
+#toc {
+  position: sticky; top: 5.2rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .85rem .9rem;
+}
+#toc .toc-label {
+  margin: 0 0 .55rem;
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+#toc a {
+  display: block; text-decoration: none; color: var(--muted);
+  font-size: .82rem; padding: .28rem 0; border-bottom: 1px solid transparent;
+}
+#toc a:hover, #toc a.active { color: var(--accent); }
+#toc a .t { color: var(--text); display: block; font-size: .86rem; }
+#toc a .r { font-size: .72rem; opacity: .85; }
+.article {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.35rem 1.45rem 2.5rem;
+  max-width: 100%;
+}
+.article > .lead, .article > .meta-box, .seg, .article > header {
+  max-width: var(--measure);
+}
+.article header h1 {
+  font-size: 1.45rem;
+  margin: 0 0 .6rem;
+  line-height: 1.35;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: .55rem;
+}
+.lead {
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0 0 1rem;
+}
+.meta-box {
+  background: var(--chip);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .75rem 1rem;
+  margin: 0 0 1.5rem;
+  font-size: .88rem;
+  color: var(--muted);
+}
+.meta-box ul { margin: .35rem 0 0; padding-left: 1.1rem; }
+.meta-box li { margin: .15rem 0; }
+.seg {
+  margin: 2.1rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+.seg > h2 {
+  font-size: 1.18rem;
+  margin: 0 0 .35rem;
+  color: var(--accent-2);
+}
+.seg .seg-range {
+  color: var(--muted);
+  font-size: .82rem;
+  margin: 0 0 .9rem;
+}
+.seg-meta {
+  font-size: .86rem;
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+.seg-meta ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+.sub {
+  margin: 1.35rem 0 0;
+}
+.sub > h3 {
+  font-size: 1.02rem;
+  margin: 0 0 .55rem;
+  color: var(--text);
+  font-weight: 650;
+}
+.sub h4 {
+  font-size: .92rem;
+  margin: .7rem 0 .35rem;
+  color: var(--accent);
+}
+.sub p {
+  margin: 0 0 .85rem;
+  font-size: .95rem;
+}
+.sub p.aside {
+  color: var(--muted);
+  font-size: .88rem;
+  border-left: 3px solid var(--border);
+  padding-left: .75rem;
+}
+.sub ol {
+  margin: 0 0 .85rem;
+  padding-left: 1.25rem;
+}
+.sub li {
+  margin: .28rem 0;
+  font-size: .94rem;
+}
+.sub code, .meta-box code, .lead code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .86em;
+  background: #0a1018;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: .05em .35em;
+}
+figure.shot {
+  margin: .95rem 0 1.1rem;
+  max-width: min(100%, 640px);
+}
+figure.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #000;
+}
+figure.shot figcaption {
+  margin-top: .4rem;
+  font-size: .78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.footer-note {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: .82rem;
+  color: var(--muted);
+  max-width: var(--measure);
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  #toc { position: static; max-height: none; }
+}
+
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="#top">Grok Bot Galaxy Day 3</a>
+    <span class="muted">日本語厚めメモを軸にした読書用 Recap（ギャラリーではない）</span>
+  </div>
+  <nav class="chips" aria-label="セグメント">
+<a href="#seg01">seg01</a>
+<a href="#seg02">seg02</a>
+<a href="#seg03">seg03</a>
+<a href="#seg04">seg04</a>
+<a href="#seg05">seg05</a>
+<a href="#seg06">seg06</a>
+<a href="#seg07">seg07</a>
+<a href="#seg08">seg08</a>
+  </nav>
+</header>
+<div class="layout" id="top">
+<nav id="toc" aria-label="目次">
+  <p class="toc-label">目次</p>
+  <a href="#seg01"><span class="t">開幕・工場・Marketing Ops（Matthew）</span><span class="r">seg01 · 0:00–1:00</span></a>
+  <a href="#seg02"><span class="t">Q&amp;A・BRB・Thursday Arena ローンチ</span><span class="r">seg02 · 1:00–2:00</span></a>
+  <a href="#seg03"><span class="t">工場運用・Cal Day・Growth（Vincent）</span><span class="r">seg03 · 2:00–3:00</span></a>
+  <a href="#seg04"><span class="t">Growth続き・Mattと事業成長</span><span class="r">seg04 · 3:00–4:00</span></a>
+  <a href="#seg05"><span class="t">Post-Sales（Blake）・円卓メトリクス</span><span class="r">seg05 · 4:00–5:00</span></a>
+  <a href="#seg06"><span class="t">オートバトラー磨き・大企業・Dan</span><span class="r">seg06 · 5:00–6:00</span></a>
+  <a href="#seg07"><span class="t">Josh Marketing・円卓復帰</span><span class="r">seg07 · 6:00–7:00</span></a>
+  <a href="#seg08"><span class="t">最終時間・工場デモ・クロージング</span><span class="r">seg08 · 7:00–終了</span></a>
+</nav>
+<article class="article">
+<header>
+  <h1>Building a company in 3 days - launching today! — Day 3 Recap（日本語記事）</h1>
+</header>
+<p class="lead">
+  Day 3 は会社ローンチ当日。ゲームスタジオ（Thursday Arena）公開と、Marketing Ops / Post-Sales / Growth などの実務トークが並ぶ。
+  厚めノートを時刻印なしの読み物にし、スクリーンショットは話題の近くに少数だけ差し込みます（末尾ギャラリーはありません）。
+  0:00–≈0:09:55 の無音/BRB countdown は埋めず、本編発話は ≈0:09:56 から。
+</p>
+<div class="meta-box">
+  <strong>ソース情報（REPORT.md）</strong>
+  <ul>
+    <li>ソース: <a href="https://x.com/i/broadcasts/1YGNrbXEeazGw" rel="noopener">https://x.com/i/broadcasts/1YGNrbXEeazGw</a></li>
+    <li>タイトル: Building a company in 3 days - launching today!</li>
+    <li>長さ: 約 7:58:21。0:00–≈0:09:55 は無音/BRB countdown（本編発話は ≈0:09:56〜）</li>
+    <li>方法: yt-dlp replay → faster-whisper tiny int8 → 日本語厚めメモ＋ffmpeg スクショ</li>
+    <li>欠測方針: 音声が取れない区間は推測で埋めない。BRB 等の無音は無音と書く。</li>
+  </ul>
+</div>
+<section class="seg" id="seg01">
+  <h2>開幕・工場・Marketing Ops（Matthew）</h2>
+  <p class="seg-range">seg01 · ストリーム 0:00–1:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: ストリーム時刻 0:00:00–1:00:00（クリップ時刻＝ストリーム時刻）</li>
+    <li><strong>音声</strong>: （収録クリップ）（3600.07秒）成功</li>
+    <li><strong>字幕</strong>: <code>seg01/seg01.vtt</code> / <code>seg01/seg01.txt</code>（faster-whisper tiny int8 / en）成功・538 cues。最初の発話は <strong>00:09:56</strong></li>
+    <li><strong>画面</strong>: countdown「Grok Bot Galaxy」→ 円卓スタジオ Day3 開幕 → ゲーム工場デモ（Bake/Play 等）→ <strong>Be right back</strong> → メインステージ「Grok Bot for Marketing Operations」（Matthew）</li>
+    <li><strong>注</strong>: Whisper は Grok Bot を Grock-Bogg / Grockbot / graph bot / Brockbot / Rothbot 等と誤認。画面表記に合わせて <strong>Grok Bot</strong> に正規化。社名「SpaceX AI」混同あり → 文脈・画面では <strong>xAI</strong>。potato=Lauren、Motion（Whisper: Rootian/Rochan）、peestack（P-FAC / potato mode スキル群）。不明箇所は「聞き取り不明」。</li>
+  </ul></div>
+  <div class="sub" id="seg01-s1">
+    <h3>無音 / BRB（countdown）</h3>
+    <figure class="shot">
+      <img src="seg01/t000000_brb_countdown_0955.jpg" alt="brb countdown 0955" loading="lazy"/>
+      <figcaption>brb countdown 0955</figcaption>
+    </figure>
+        <p><strong>無音</strong>。AAC ステレオはあるが mean ≈ <strong>−91 dB</strong>。発言なし。推測で埋めない。</p>
+    <p>画面では、「Grok Bot Galaxy」中央タイトル＋<strong>countdown</strong>（t=0 で約 09:55、t=60 で 08:55、t=150 で 07:25…）。右に <strong>Live agenda</strong>（Day 3 Livestream Starts / Grok Bot for Marketing Operations / Build A Game Studio / Grok Bot for Post-Sales）。下に Cupcake Eng 等の founding bots パネル。</p>
+    <p><strong>方針</strong> は、Day2 冒頭と同様、実質スタートは <strong>≈0:09:56</strong>。</p>
+      </div>
+  <div class="sub" id="seg01-s2">
+    <h3>Day3 開幕・自己紹介・新規ユーザー1ヶ月無料</h3>
+    <figure class="shot">
+      <img src="seg01/t000956_day3_speech_start.jpg" alt="day3 speech start" loading="lazy"/>
+      <figcaption>day3 speech start</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t001000_day3_open_intros.jpg" alt="day3 open intros" loading="lazy"/>
+      <figcaption>day3 open intros</figcaption>
+    </figure>
+        <p>「We&#x27;re back for <strong>day three</strong>」「today we&#x27;re <strong>shipping our company</strong>」初めての視聴者向け: <strong>72時間で会社を作る</strong> / <strong>Grok Bot Galaxy</strong> イベント（SF）</p>
+    <p>自己紹介ラウンド:</p>
+    <ol>
+      <li><strong>Matt</strong> — Developer Experience（音声は SpaceX AI → <strong>xAI</strong>）</li>
+      <li><strong>potato / Lauren</strong> — Grok Bot 周り（Whisper: Patito / graph）</li>
+      <li><strong>Motion</strong>（Whisper: Rootian）— Product on Grok Bot。</li>
+    </ol>
+    <p>画面では、円卓3人。右 Live agenda。下バナー「New users: one month of free Grok Bot」＋タイマー。</p>
+    <p>昨夜 Lauren が <strong>software factory</strong> をセットアップ。その前に告知。<strong>新規ユーザー向けプロモ</strong> は、次の約10分以内にサインアップすると <strong>Grok Bot 1ヶ月無料</strong>。アカウント未所持者向け。タイマーが下に表示。</p>
+    <p>条件の骨子は、Grok Bot をダウンロード → アカウント作成 → <strong>recurring task（定期タスク）を1つ設定</strong>。potato が例をツイート予定: メール巡回、GitHub issues 監視、Slack 確認など「時間を食う作業」の自動化。</p>
+    <p>QR / 画面共有で「one free month」。新規アカウントのみ。過去2日視聴していても未登録なら対象、という説明。クレジット込みでかなり太い無料枠。<strong>約 $200 相当 / 最高ティアの1ヶ月</strong>（発言どおり）</p>
+    <p>残り約9分。その時間で昨夜の進捗も話す方針。</p>
+      </div>
+  <div class="sub" id="seg01-s3">
+    <h3>ゲームスタジオ宣言・工場の仕組み・Potato Mode</h3>
+    <figure class="shot">
+      <img src="seg01/t001020_free_month_promo.jpg" alt="free month promo" loading="lazy"/>
+      <figcaption>free month promo</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t001100_free_month_qr.jpg" alt="free month qr" loading="lazy"/>
+      <figcaption>free month qr</figcaption>
+    </figure>
+        <p>本題: <strong>ゲームスタジオを立ち上げ、今日最初のゲームをローンチ</strong>する。数時間以内。「army of Grok Bots」でゲームを構築。昨日午後から <strong>software factory</strong> を組んだ。</p>
+    <p>Matt の工場コピーは Lauren の bot templates に触発。Lauren（＋Motion） は、昨夜ゲームメカニクスと polish をブレインストーム。最初は <strong>1v1 じゃんけん＋Elo＋リーダーボード</strong>だったが、遊んでみて面白くなかった。</p>
+    <p>好きな他ゲームのメカニクスに着想してプラン再設計。Motion と <strong>Cloud agents</strong> で計画。<strong>peestack / P-FAC</strong> は、Lauren 個人のスキルセット（Cursor プラグイン＋Motion プラグイン、聞き取り）。その中のスキル <strong>Potato Mode</strong>。</p>
+    <p>Potato Mode は、ボットをより厳密に・他ボット／エージェントのオーケストレーションを上手くする教え込み。<code>/potato mode</code> ＋「full auto pilot this plan」→ 計画を小さなフェーズに分解 → ミニ工場: PR 実装エージェント、検証エージェント（アプリ起動・fuzz／クリックテスト・バグ発見）→ 信頼が十分ならマージ／フルオートパイロットで auto-merge。</p>
+    <p>一晩で <strong>100本超の PR</strong>。クローズ済みは <strong>〜170</strong> 前後（発言ゆれ 145→170）。UI リデザイン、バックエンド強化、セキュリティ／負荷対策など。</p>
+      </div>
+  <div class="sub" id="seg01-s4">
+    <h3>Play ボット（QA）・Routines・「工場」の意味</h3>
+    <figure class="shot">
+      <img src="seg01/t001200_software_factory_tease.jpg" alt="software factory tease" loading="lazy"/>
+      <figcaption>software factory tease</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t001500_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <p>デモ: PR #124（UI）をマージした直後のボット間通信。ボット <strong>Play</strong> = playtester / QA。昨日いたインターンは今日いないので QA ボットが PR を見る。</p>
+    <p><strong>subscription / recurring task / イベント応答</strong> は、CI が緑の PR を見たら自動でプレイテスト、UI を end-to-end で操作、ゲームエンジン理解に基づくフィードバック。</p>
+    <p>画面では、Grok Bot アプリ「Bake」（Founding Eng）のチャット、PR #124 mashed to main、Play が playtester。Live agenda＋無料タイマー。</p>
+    <p>Lauren は、「factory」という語は好きではないが、自動化の近い比喩。エンジニアでなくても反復タスクは多い（メール忌避など）Grok Bot に inbox / Slack / GH PRs を教えれば自動化できる、と推す。</p>
+    <p>プロモ残り約2分20秒の再告知（アカウント＋recurring task）Matt の要約: software factory の本質は <strong>エージェントが自分で回せるフィードバックループ</strong>。人手の UI クリック・検証・ログ確認を減らし、正しいコンテキストを渡す。ソフト開発だけでなくメールやビジネスオペにも同じ。<strong>会社を AI で作る</strong>＝人間ワークフローを分解し、エージェントがやるべき部分を切り出す（スパム除去・下書きは可、送信判断は人間、等）</p>
+      </div>
+  <div class="sub" id="seg01-s5">
+    <h3>ゲーム UI 初披露（コードネーム Cupcake）</h3>
+    <figure class="shot">
+      <img src="seg01/t002000_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t002500_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <p>プロモ残り約1分。並行して Matt が UI polish 用ボットを追加起動。ゲーム UI を見せるか議論（スクロール問題など「恥ずかしくないなら」）</p>
+    <p><strong>コードネーム Cupcake</strong>。正式名はローンチ時に発表予定。「stay tuned」<strong>Login with X（Twitter）</strong> 動作。グローバルリーダーボード。</p>
+    <p>ゲーム画面共有（カード／対戦／リーダーボード系 UI。細部は画面依存）。スポンサーシップフォームがメインに残っていて後で移す必要あり、とコメント。「mid-game に捕まえた感じ」として、工場がまだ磨き中だが動き続けている。</p>
+    <p>画面では、付近。</p>
+      </div>
+  <div class="sub" id="seg01-s6">
+    <h3>ティア／競技・ロードマップ・Steve・遷移前</h3>
+    <p>視聴者にも <strong>platinum tier</strong> などを競えるチャンスを、という言及（ゲーム内ランク／チャレンジ、聞き取りやや不明瞭）ゲーム知識とオフカメラ作業のつなぎ。音楽ボットは未優先だが <strong>Suno</strong> でトラック生成済み。「annoying nice」な音楽にする約束。</p>
+    <p>今日はローンチして終わりではなく、アプリを継続更新。昨夜オーディオデザイン、3D プロト（アニメ／キャラ）もボットが試作。チャットに UI polish / メカニクス案を求む。</p>
+    <p>本番の Live agenda と画面上の bots を紹介。<strong>Steve</strong> = chief of staff ボット（ショー運営）。Cupcake 関連ボット。Lauren も自分の chief of staff を Steve に改名した話で笑い。最初のトークまで約3分 — <strong>Grok Bot for Marketing Operations</strong>。今日はゲームスタジオ立ち上げ＆初ゲーム公開日。視聴者プレイ→フィードバック→自動 feature factory へ。</p>
+    <p>Login with X でエラー報告。サーバ側ログを見て Grok Bot に渡す、というリアルタイムデバッグ。「Grok Bot に渡せる仕事に本質的な上限はない」方向の話の途中で音声が途切れる。</p>
+      </div>
+  <div class="sub" id="seg01-s7">
+    <h3>無音 / Be right back（ステージ移動）</h3>
+    <figure class="shot">
+      <img src="seg01/t002840_gap.jpg" alt="gap" loading="lazy"/>
+      <figcaption>gap</figcaption>
+    </figure>
+        <p><strong>無音</strong>（mean ≈ −91 dB）。約 <strong>5分57秒</strong>。発言なし。捏造しない。</p>
+    <p>画面では、「Grok Bot Galaxy / <strong>Be right back</strong>」＋キャラクターリング。</p>
+    <p><strong>文脈（画面・前後のみ）</strong> は、円卓からメインステージ（Marketing Ops トーク）への移動想定。音声は欠測。</p>
+      </div>
+  <div class="sub" id="seg01-s8">
+    <h3>Matthew — Grok Bot for Marketing Operations 開幕</h3>
+    <figure class="shot">
+      <img src="seg01/t003500_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t004000_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <p>発話再開。モデル改善で「より真になる」前提の続きから。<strong>always-on agents</strong> — ノートPCを閉じても止まらない。自然言語でボットに話し、権限を把握し、夜通し価値を出す、という「Why Grok Bot」の流れ。</p>
+    <p>画面では、スライド「Why Grok Bot」— Easy as iMessage / Always-on agents / Uses your tools like you / Finishes the work / Shareable Templates。</p>
+    <p>登壇者は xAI 内部の <strong>revops / marops</strong> での Grok Bot の使い方を共有（アジェンダ上の名前: Matthew。Whisper 姓名ゆれあり → 画面 Live agenda「Matthew … Marketing Operations」に合わせる）会場挙手: revops/marops、GTM engineering / systems。</p>
+    <p>キーメッセージは、<strong>rules だけでなく tools を建てられる</strong>。キャンペーン設定チェックリストを配るだけでなく、ルールを守る内部アプリ／インフラを作れる。マーケ／セールスが「ゲーム」をプレイし、ops がそのゲームをデザインする。デモ前に自分のボット軍団を紹介（音楽ガジェット由来の名前）:</p>
+    <ol>
+      <li><strong>OP1</strong> — synthesizer メタファー / Chief of Staff 的に仕事を回す。</li>
+      <li><strong>Fisher</strong> — 全 inbox 受信（email / calendar / SMS / Slack）</li>
+      <li><strong>Juno</strong> — PM ボット（要件・コーナーケース）</li>
+      <li><strong>Owned</strong>（Whisper: owned）— engineer ボット（CRM・DWH・内部ツールコードベース）</li>
+    </ol>
+      </div>
+  <div class="sub" id="seg01-s9">
+    <h3>デモ1: Self-completing task list</h3>
+    <figure class="shot">
+      <img src="seg01/t004500_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg01/t005500_key.jpg" alt="key" loading="lazy"/>
+      <figcaption>key</figcaption>
+    </figure>
+        <p><strong>self-completing task list</strong>。生産性オタクとして半十年、revops の本質はステークホルダー管理＋優先度判断。</p>
+    <p>ボットが全 inbox を監視し、実タスク vs FYI を蒸留。デモ中も Fisher が 9:04 の定期ルーチンで inbox を吸い、<strong>OP1</strong> に email/calendar/work chat のサマリーをプロアクティブ送信。</p>
+    <p>通知オフでも重要だけ浮上 → コンテキストスイッチ削減。ボットはメッセージ単体だけでなく Slack スレッド全体を読み、「相手が何を求めているか」を蒸留。</p>
+    <p>Fisher＋OP1 がタスク化 → 例: AE 間の <strong>territory dispute</strong> → <strong>territory planning bot</strong> へリレー（ROE・CRM 文脈付き）→ 成果物の第一草稿まで。人間は検証・最終化。「本当にチームがいる」として、監視・蒸留・専門ボットへの委譲・監督。</p>
+      </div>
+  <div class="sub" id="seg01-s10">
+    <h3>デモ2: 「リードのマッチングアプリ」（社内）</h3>
+    <p>社内の <strong>dating app for leads</strong>（比喩）。マーケ→セールスのハンドオフが古典的に壊れる問題（リード放置、フィードバック欠如）AE が自分のリードだけ見て、左スワイプで end（理由必須→CRM 正しい書き戻し）、右スワイプでフォローアップシーケンスへ。ops は SLA 説教ではなく「ゲーム」を設計する。</p>
+    <p>Juno（PM）に「内部アプリ案＋CRM 双方向が最重要」と依頼。従来 AI はすぐコードに走りプロンプト不安を生む。<strong>Grok Bot は良いフォローアップ質問</strong>をする（フィルタ、accept 時の CRM フィールド変更の有無、オフライン操作の確認など）</p>
+    <p>例は、accept 時は CRM フィールドを変えない — 実ステータス変更は「レップが連絡した瞬間」で既存オートメーションがある、と人間が深く考え直す。Juno が仕様を起草し、促されず <strong>Owned（eng）へハンドオフ</strong>してビルド開始。「チームが end-to-end で動く」感。</p>
+    <p>完成 UI デモ（モックデータ） は、カードにリード情報、左 end / 右 sequence、流入経路など。アイデア→実装は約2週間、うちライブビルド実質 <strong>約10時間</strong>。残りは導入・フィードバック。採用後リード review 率が急上昇。AE もマーケも高品質フィードバックを好む。</p>
+    <p>会場挙手: AI なしで同等プロダクトを作れる人はほぼ片手。AI／このデモ後は多くの手が上がる。</p>
+      </div>
+  <div class="sub" id="seg01-s11">
+    <h3>教訓スライド → Q&amp;A へ</h3>
+    <p>教訓:</p>
+    <ol>
+      <li><strong>フルチームを雇えるなら誰を入れるか</strong> — Grok Bot は「CEO 的な雇い方」を民主化。無制限に専門家を文脈付きで雇える。</li>
+      <li><strong>ボットを信頼しつつガードレール</strong> — 権限を把握したうえで大きなタスクを任せ、出荷前に必ず戻す（CRM 書き込み、PR 等）。</li>
+      <li><strong>ルール屋ではなく PM</strong> — プロダクトは <strong>revenue growth</strong>。Dreamforce 週という文脈で、GTM のボトルネックを見つけて潰すのが仕事。人間関係・信頼・要件蒸留のあと、実際に建つ。</li>
+    </ol>
+    <p>本編終了、質疑へ。</p>
+      </div>
+  <div class="sub" id="seg01-s12">
+    <h3>Q&amp;A（WhatsApp / コネクタ / 1Password）</h3>
+    <p>質問は、WhatsApp をマーケ用途で Grok Bot と連携するには？登壇者: ネイティブ WhatsApp コネクタの有無は断言せず。個人的には <strong>Beeper</strong> のようなメガチャットをボットのコンピュータに入れて、アプリを人間同様に使う手がある（ネイティブ連携がなくても可）</p>
+    <p>別質問: Meta / Google 広告などネイティブ認証が切れる問題。ロードマップは？詳細ロードマップは話せないが、<strong>昨日発表の 1Password 連携</strong>: パスワードボルトをボットと共有 → トークン／ログイン切れを監視するルーチン → 必要ならボルト経由で再認証、というパターン。</p>
+    <p>質問者の夢: 広告モニタ→予算増減→新規広告作成のループ。登壇者: revops 的には元来「システム／プロセス／ワークフロー理解」が仕事。その傾向を AI に載せると自動化になる。複雑な仕事の分解が鍵、と締めに入り <strong>1:00:00</strong> でセグメント境界。</p>
+      </div>
+</section>
+<section class="seg" id="seg02">
+  <h2>Q&amp;A・BRB・Thursday Arena ローンチ</h2>
+  <p class="seg-range">seg02 · ストリーム 1:00–2:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: ストリーム時刻 1:00:00–2:00:00（クリップ＝ストリーム−1h）</li>
+    <li><strong>音声</strong>: <code>clips/seg02.mp4</code>（3600.07秒）成功。全体 mean は発話帯で ≈−30〜−34 dB</li>
+    <li><strong>字幕</strong>: <code>seg02/seg02.txt</code> / <code>.vtt</code>（faster-whisper tiny int8）<strong>1012 cues</strong></li>
+    <li><strong>画面</strong>: Marketing Ops Q&amp;A 続き → BRB → 円卓「Build A Game Studio」再開 → 本番デプロイ／リーダーボード／<strong>Thursday Arena</strong> 名公開 → ローンチダッシュボード</li>
+    <li><strong>注</strong>: Grok Bot / xAI / potato / Motion / peestack / Clerk（Whisper: CLERG）/ Vercel / PlanetScale / Thursday Arena を正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg02-s1">
+    <h3>Q&amp;A続き：仕事の分解・ボットと人間の関係・職の価値</h3>
+    <p>前セグメント末の続き。複雑な仕事はチャンクに分解（例: 広告プラットフォームログイン→分析、レポートDL、他データと照合…）。非AI世界でも詳細手順を書ける人ほどボット化しやすく、専門ボットをタンデムで回せる。質問は、ボットが進化するならマーケスタックの何が先に消えるか。ボットと人間の関係は？</p>
+    <p>登壇者: <strong>鏡（mirror）</strong>。思考パートナーとしての Q&amp;A で、ボットが自分の見落としを突く → 自分が深く考える → またボットに返す。「AI をプロンプトする」だけでなく <strong>AI がこちらをプロンプトする</strong>。消えるスタックは断定しにくい。複雑なツールのボタン知識は残るが、コーディングと同様に参入障壁は下がる。ゲートキーパーとしての価値は減り、<strong>高次の思考・システム直観・taste</strong> が残る。メニューマスター志望者は少ないが、面倒な作業が思考を遅らせ深める効果は AI と同様にある。ボタン配線・インテグレーション作業は減る方向。</p>
+      </div>
+  <div class="sub" id="seg02-s2">
+    <h3>マルチプレイヤー／Tesla／Juno テンプレ／セールス反応</h3>
+    <p>質問は、各自が自分の Grok Bot を持ち同じプロジェクトを進めるとき、エージェント同士の調和はどう考えるか。ボットが個人の思考を学習するが個人最適に閉じる問題。登壇者: 会社として先走りはできないが、<strong>まもなくこれに応える面白いもの</strong>が出る、と示唆。ホスト側も「みんな multiplayer を待っている」と茶化す。</p>
+    <p>会場 は、「Grok Bot on Tesla？」→ 答えられない／親も Tesla 持ちで同じ質問が来る、と笑い。Max は、<strong>Juno テンプレ</strong>は？ → 今日見せたボットは後でテンプレとして共有できるよう手配する。</p>
+    <p>セールスの反応は？ → <strong>大好き</strong>。通勤電車で左右スワイプしてリード処理、隣席には何のアプリか分からない。数週間で lead review rate が記録更新。5タブ・多数メニューより圧倒的に良い。ジョークとして、「人生に別のデーティングアプリは要らない」→「でもこれはデートが成立するとお金になるデーティングアプリ」。signal→SQL のコマンドセンターへ拡張余地。<strong>Grok Bot</strong> のおかげで積み上げ続けられる。</p>
+      </div>
+  <div class="sub" id="seg02-s3">
+    <h3>人間が残すべき仕事・Starship チャレンジ告知・トーク終了</h3>
+    <p>最後の質問: AI ができても <strong>人間がオーナーであるべきタスク</strong>は？関係・信頼・問題解決。4歳で revops/marops を知る人はいないし、今日100%説明できる人も会場で挙がらない——人間が作った概念。肩書きやツールに依存せず、関係を築き問題を解くことが常に仕事。</p>
+    <p>画面でチャレンジ発表: X で「なくてはならない Grok Bot」を共有 → 当選者＋ゲストが <strong>Starbase（Texas）で Starship 打ち上げ観覧</strong>のチャンス。応募: <strong>@grok</strong> と <strong>@bot</strong> をフォロー → チャレンジ投稿を <strong>quote</strong> → ボット説明＋共有テンプレリンク。QR あり。「good luck」。感謝でトーク終了。</p>
+      </div>
+  <div class="sub" id="seg02-s4">
+    <h3>BRB／低音量（発話キューなし）</h3>
+    <figure class="shot">
+      <img src="seg02/t011100_x.jpg" alt="x" loading="lazy"/>
+      <figcaption>x</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg02/t012000_x.jpg" alt="x" loading="lazy"/>
+      <figcaption>x</figcaption>
+    </figure>
+        <p>一瞬「Okay, we&#x27;re back.」のあと、Whisper cues が途切れ <strong>≈1:21:04</strong> までギャップ（約10分）<strong>音声</strong> は、区間の mean は ≈−40〜−45 dB（完全無音の −91 dB ではない）。環境音／BGM の可能性。<strong>明確な発話キューなし → 内容は捏造しない</strong>。</p>
+    <p>画面では、Be right back 系／ステージ切替想定。 等。</p>
+      </div>
+  <div class="sub" id="seg02-s5">
+    <h3>Welcome back：カードバトル・工場・Clerk／DNS／ドメイン未公開</h3>
+    <figure class="shot">
+      <img src="seg02/t012140_x.jpg" alt="x" loading="lazy"/>
+      <figcaption>x</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg02/t012700_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>「Welcome back」。Day3、ゲームスタジオ＆初ゲームをデプロイ中。Grok Bot でゼロから事業／ゲーム。クライアント／Web secrets 管理中——本番シークレットは配信に出さない。</p>
+    <p>ゲームは <strong>card battle 系</strong>。UI polish パス進行中（「期待値を下げて」と茶化しつつ改善中）SF の Grok Bot Galaxy 会場。下りでトーク、上りでスタジオ。日中カットイン多数／ゲスト可能性。午後はマネタイズ・マーケ／レベニューの xAI メンバーも予定。</p>
+    <p>目標: アプリを live → プレイ中フィードバックをアプリ内へ → play test → <strong>embarrassed なら ship</strong> の古典に従い今日中に反復。工場: 自動バグ修正・自動プレイテスト・自動 PR レビュー。本番バグ検知 → Cloud agent に PR → Play tester がエンジン通し → CI と合わせて承認。Grok Bot × GitHub。</p>
+    <p><strong>Clerk</strong> で Login with X。Elo／リーダーボード／practice mode。今はドメイン・DNS・CORS の詰め。「It&#x27;s always DNS」スタック: Clerk（認証）＋ <strong>Vercel</strong>（ホスティング／preview を playtester が叩く）＋本番 hardening（DB・ingress・セキュリティ）</p>
+    <p><strong>ドメイン名はあるがまだ非公開</strong>。まもなく名前公開。<strong>PlanetScale</strong> で負荷試験済み。</p>
+      </div>
+  <div class="sub" id="seg02-s6">
+    <h3>Ops スタック・フィードバック triage・コンテキスト管理</h3>
+    <figure class="shot">
+      <img src="seg02/t013300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Slack（バグ報告チャンネル等）の ops スタック。ボットが人間より速くツールを使う。xAI 内部でも issue 投稿 → triage ボットが再現・ログ・担当提案。（以降）エンジニアリング作業の節約、接続作業としてのソフト開発、コンテキスト管理の話が続く。工場の「何をボットに覚えさせるか」が品質を左右。</p>
+    <p>コンテキスト管理の具体・クリーンアップ項目の列挙（UI 粗・バグ・文言）。画面共有で工場／PR 状況。</p>
+      </div>
+  <div class="sub" id="seg02-s7">
+    <h3>ゲーム内コンテンツ・経済・手動プレイテスト案</h3>
+    <figure class="shot">
+      <img src="seg02/t014500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>自チームのランキング／スポット表示の確認。writing bot など役割ボットが稼働。</p>
+    <p>デザイン／バランス議論（カード売却でゴールド等の経済）「売るとゴールド1」系ルールの言及。</p>
+    <p>fuzz／ステップバイステップ体験ウォークスルー。人間も一斉に入って手動プレイテストする案。気に入った bot template を作ってくれれば、という視聴者向け呼びかけ。</p>
+      </div>
+  <div class="sub" id="seg02-s8">
+    <h3>経緯振り返り・<strong>Thursday Arena</strong> 名公開・公式アカウント注意</h3>
+    <p>Day1 遅く〜Day2 初めにアイデア確定、という振り返り。<strong>正式名公開</strong> は、ゲームスタジオ／ゲームの公式は <strong>@ThursdayArena</strong>（X）と <strong>thursdayarena.com</strong> のみ。それ以外は公式ではない、と明言。</p>
+    <p>フォロー促進がサイドクエスト。Lauren: Apple 絵文字 PNG 化ツール（emojis.…）でカップケーキ絵文字を仮プロフィールに。favicon / OG / SEO・AEO はこれから。</p>
+      </div>
+  <div class="sub" id="seg02-s9">
+    <h3>リーダーボード急成長・Launch pulse ルーチン</h3>
+    <p>リーダーボードに <strong>96人</strong> → すぐ増加。サインイン動作確認。Motion は、ローンチ用ダッシュボードをボットに依頼中。<strong>15分ごと Launch pulse</strong>（サインアップ、practice 数、practice→本番アカウント転換ファネル等）。xAI 内部ローンチでも同手法。</p>
+    <p>実況: Motion 1位、Ben J. Bush 2位、Lauren 順位下降… 更新頻度を1分にしたい話。フォロワー <strong>225</strong>。同時接続数も欲しい。「まだ落ちていない」ことに感心。Ben が1位に。リーダーボード賞の話は近日。ユーザー数急増の声。</p>
+      </div>
+  <div class="sub" id="seg02-s10">
+    <h3>peestack で無査読マージ・Go／PlanetScale・型安全</h3>
+    <figure class="shot">
+      <img src="seg02/t015400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>昨夜工場フル回転。<strong>Potato Mode + peestack</strong> で「巨大な X 群衆に耐える性能」を指示。<strong>コードは一切見ていない</strong>と正直告白——それでも耐えている。ユーザーほぼ <strong>500</strong>。バックエンドは <strong>Go</strong> の serverless（Whisper: herself→<strong>Vercel functions</strong> 文脈）。DB は <strong>PlanetScale</strong>。</p>
+    <p>FE/BE の型同期問題。REST。応答を <strong>Zod</strong>（Whisper: pod）でパースしネットワーク越しの型安全を担保する現実的アプローチ。理想設計にはまだ時間不足だった、と。thursdayarena.com への QR 要求 → もう出ている。</p>
+      </div>
+  <div class="sub" id="seg02-s11">
+    <h3>ローンチメトリクス・Hockey stick・ゼロイチの見方</h3>
+    <p>Motion 画面: Grok Bot 上の founding eng が issue を聴き続けている。ローンチ指標はダッシュボードサイトよりボットに聞いた方が速い。<strong>Hockey stick</strong> チャート登場。practice sessions <strong>600超</strong>。practice→Sign in with X 転換などファネル。Sign-in with X <strong>400</strong> 超（既に過小表示の示唆）。「funding 取りに行こう」ジョーク。</p>
+    <p>ファネル離脱、リテンション、将来のマネタイズ指標の話。Lauren→Motion: PM として何を見る？ → ゼロイチではマネタイズ前なので <strong>Bay Area Growth Machine</strong> 的に「人が遊んでいるか・楽しんでいるか・入れ続けられるか」が最優先、と <strong>2:00</strong> 境界へ。</p>
+      </div>
+  <div class="sub" id="seg02-s12">
+    <h3>補足：デプロイ細部・工場・コンテキスト</h3>
+    <p>Clerk 開発者アカウントで Login with X。Elo・リーダーボード・practice mode。ドメイン／DNS／CORS の本番詰め。「It&#x27;s always DNS／sometimes CORS」</p>
+    <p>Vercel preview URL を playtester が叩く流れ。本番は DB・ingress・セキュリティ hardening。PlanetScale 負荷試験。ゲームストア用 DB 群。</p>
+    <p>Slack バグ報告チャンネルにリアルタイム流入。ボットが triage（再現・ログ・担当提案）し人間より速い。コンテキスト管理・プロンプト差分・品質低下リスク（3人＋多エージェント）。工場が「何を覚えているか」が品質を決める。</p>
+    <p>自チーム順位確認、writing bot、カード経済（売却でゴールド）のバランス議論。人間一斉プレイテスト／fuzz の提案。気に入った bot template 募集。</p>
+      </div>
+  <div class="sub" id="seg02-s13">
+    <h3>補足追記</h3>
+    <p>Thursday Arena 名公開は Day3 最大のマイルストーン。公式チャネル限定の注意が以降繰り返し。peestack+Potato Mode 無査読マージでも負荷に耐えた、が技術的正直さのハイライト。</p>
+    <p>Go serverless + PlanetScale + Zod 型ガードが「工場の土台」</p>
+      </div>
+</section>
+<section class="seg" id="seg03">
+  <h2>工場運用・Cal Day・Growth（Vincent）</h2>
+  <p class="seg-range">seg03 · ストリーム 2:00–3:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 2:00:00–3:00:00（クリップ＝ストリーム−2h）</li>
+    <li><strong>音声</strong>: <code>clips/seg03.mp4</code>（3600s）成功。発話帯 mean≈−28〜−35 dB</li>
+    <li><strong>字幕</strong>: <code>seg03/seg03.txt</code>（971 cues）。<strong>≈2:38:09–2:44:19</strong> は cues 欠落（音量は残存 ≈−30〜−36 dB → Whisper/VAD 欠測。捏造しない）</li>
+    <li><strong>画面</strong>: ライブビルド／メトリクス → フィードバック→工場ループ → ゲスト（Cal Day）→ <strong>Vincent（Growth）</strong> と Thursday Arena 成長プレイブック</li>
+    <li><strong>注</strong>: Grok Bot / xAI / peestack / Potato Mode / Thursday Arena / Clerk / Vercel / PlanetScale / Dr.Eggbot 正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg03-s1">
+    <h3>ゼロイチ指標・マッチメイク／Elo の不調</h3>
+    <figure class="shot">
+      <img src="seg03/t020300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>前セグメント続き。プレレベニューなので収益より <strong>engagement / retention</strong>。ファネル完走・再訪。将来は中小ビジネス成長支援も視野、だが今はコーヒー代もまだ。ゲームメカニクスが最重要。自分たちも大量にプレイして感触を取る。</p>
+    <p>現状は <strong>loss heavy</strong>。AI マッチメイクが怪しい可能性。相手プールから消える／スナップショット不整合の疑い。上位ほどポイントが取りにくい設計の言及。Elo 表示バグ候補。</p>
+    <p>Ghost Players / AI players / unknown の内訳。勝敗は負け過多。</p>
+      </div>
+  <div class="sub" id="seg03-s2">
+    <h3>データ接続・プラグイン・リーダーボード実況・フィードバック導線</h3>
+    <p>ボットが情報を集約できる話。プラグインがあれば何でも、なければエージェントに直接指せる。自分の順位（27位など）をどう上げるか実況。</p>
+    <p>Lauren のフィードバックループ論に接続。外側データ→内側エンジニアリングループ。視聴者向けの面白い参加導線を追加作業中。</p>
+    <p><strong>Steve</strong>（chief of staff）経由で、ユーザーフィードバックを受ける <strong>Slack チャンネル</strong>のリンクを案内。チャット勢への感謝。Slack にフィードバック送ってほしい。</p>
+      </div>
+  <div class="sub" id="seg03-s3">
+    <h3>フィードバック監査・フィルタ・優先度・OG</h3>
+    <figure class="shot">
+      <img src="seg03/t021500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>フィードバックを監査済み。バグ／要望／感想が混在。サーバ側で <strong>profanity</strong> 等フィルタ。</p>
+    <p>Elo 関連の報告も混ざる。優先度の付け方を議論（Motion↔Lauren）「Oh no」系のライブインシデント反応（詳細は画面依存）</p>
+    <p>Twitter にリンクを貼ったときの <strong>OG／プレビュー</strong>がどう出るか確認中。</p>
+      </div>
+  <div class="sub" id="seg03-s4">
+    <h3>工場エンジン再説明・triage・verification swarm</h3>
+    <figure class="shot">
+      <img src="seg03/t022700_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>今朝話したコーディング・エンジン／工場の再掲。3人＋複数エージェント＋異なるプロンプトでの協調。ボット作成を担当するメタボット的な役割。</p>
+    <p>triage ワークフロー: 確認済みバグ用。peestack 上のスキル名の説明。</p>
+    <p><strong>verification swarms</strong> は、swarm スキルが Cursor 上で多数の <strong>Cloud agents</strong> を spawn。各エージェントが別マシンでゲームを起動しクリック／<strong>fuzz</strong>（パワーユーザー的にエッジケースを潰す）。人間のクリック労働を減らしつつ、人間 fuzz も併用。Vercel / PlanetScale / Slack フィードバックを Grok Bot に接続 → 外側ループと内側（実装）ループが噛み合うと、理論上 <strong>バグが自動修正されゲームが継続改善</strong>。Dr.Eggbot に設計相談した言及（聞き取り）</p>
+    <p>エージェントシステムのセットアップに時間を投資するレバレッジ。ボット同士の役割が見える状態が強い。</p>
+      </div>
+  <div class="sub" id="seg03-s5">
+    <h3>番組案内・公式ドメイン再掲・ゲスト Cal Day 導入</h3>
+    <figure class="shot">
+      <img src="seg03/t023800_gap.jpg" alt="gap" loading="lazy"/>
+      <figcaption>gap</figcaption>
+    </figure>
+        <p>番組アップデート: 約 11am PT。ゼロから事業／ゲームスタジオ。<strong>thursdayarena.com</strong> と <strong>@ThursdayArena</strong> のみが公式。ゲスト <strong>Cal Day</strong> — Northeastern の product/engineering 系 SVC（肩書き Whisper ゆれ）。大規模コードベースの手動検査は困難 → Cursor で早期結果、という話の導入。</p>
+    <p>エージェント監督＝アーキテクト、ツールを呼び大規模協働、という論点。同趣旨の続き。</p>
+      </div>
+  <div class="sub" id="seg03-s6">
+    <h3>字幕欠測（音量あり）</h3>
+    <figure class="shot">
+      <img src="seg03/t024140_gap.jpg" alt="gap" loading="lazy"/>
+      <figcaption>gap</figcaption>
+    </figure>
+        <p><strong>事実</strong> は、cues が約 <strong>370秒</strong> 途切れる。volumedetect は mean≈−30〜−36 dB で完全無音ではない。<strong>方針</strong> は、Cal Day トークの続き／Q&amp;A／切替の可能性が高いが、<strong>内容は推測で書かない</strong>。画面フレーム <code>t0238*_gap.jpg</code> 等を参照。</p>
+    <p>発話キュー再開。</p>
+      </div>
+  <div class="sub" id="seg03-s7">
+    <h3>Motion 再導入・Vincent（Growth）参加・初手アイデア</h3>
+    <figure class="shot">
+      <img src="seg03/t024420_gap.jpg" alt="gap" loading="lazy"/>
+      <figcaption>gap</figcaption>
+    </figure>
+        <p>Motion（X: 音声 Roation → <strong>Motion</strong>） は、3日目。火曜は物理ポップアップ案 → ゲームスタジオへピボット。今朝 <strong>thursdayarena.com</strong> ローンチ。ゲスト <strong>Vincent</strong> — growth チーム（所属名 Whisper「Smith&#x27;s」ゆれ → 文脈上 xAI／関連プロダクト成長。確定できず「Growth の Vincent」と記す）</p>
+    <p>Growth とは？ PLG ではライフサイクル・ナッジ。セールス寄りなら大量メール／LinkedIn。文脈依存。Thursday Arena はサインアップ型で PLG に近い。</p>
+    <p>ゲーム画面共有（UI 未完成を謝罪）。Vincent から 15–20分でビジネス化インサイトを引き出すセッション。「growth versus dream」</p>
+    <p>Login with X → リーダーボード。Motion は順位下降中（一時1位→35位付近）Vincent 第一声: リーダーボード入り直後に <strong>シェア用ポップアップ</strong>（アーケードのネーム入れ感覚／X ハンドル）</p>
+    <p>Motion が <strong>growth ボット「Vincent」</strong> を作り、Notion に成長アイデアをログ／プレイブック化開始。</p>
+      </div>
+  <div class="sub" id="seg03-s8">
+    <h3>シェア導線・対戦体験・カード希少性</h3>
+    <p>試合終了→リーダーボード→ X にシェアして自慢、の導線をプレイブックに記録。対戦: 相手に能力があり、バトルが進行。<strong>3ラウンド制</strong>。ラウンド間で戦略（ボット／カード購入）</p>
+    <p>例は、デザイン critique ボット（Manuel／デザインチーム作）などカード。uncommon 等のティア／希少性。Vincent は、カードをシェアしたら別カードがもらえる、等の <strong>viral growth mechanic</strong>。即プレイブックへ。</p>
+      </div>
+  <div class="sub" id="seg03-s9">
+    <h3>Notion プレイブック・自動 DM・アウトバウンドの注意</h3>
+    <figure class="shot">
+      <img src="seg03/t025230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Notion ドキュメントを開いてアイデア蓄積。自動 DM の案（詳細は文脈依存）</p>
+    <p>成長施策の Continuations（アウトバウンド、通知、スパム回避）アウトバウンドで大事なのはスパムに見せないこと。Lauren: 購読解除されないと圧倒される、と共感。</p>
+    <p>セグメント境界（3:00）へ。Growth セッション継続想定。</p>
+      </div>
+  <div class="sub" id="seg03-s10">
+    <h3>補足：フィードバック運用の詳細</h3>
+    <p>Motion が作ったばかりのボットにフィードバック閲覧を指示。ゲームプレイ系 vs 実バグの多数派を把握。Matt 画面で生フィードバック。自分のプレイテストで「cannot buy new」等を発見し自分でも issue 化。</p>
+    <p>バグ修正大量。Slack に集約。チャット勢への感謝。ネットの自由記述は危険 → サーバ側 <strong>profanity</strong> フィルタ、<strong>xAI モデル</strong>での追加防御、<strong>rate limiting</strong>。</p>
+    <p>負荷でサーバを潰さないよう注意しつつフィードバック閲覧。例は、「金を買えるようにして play-to-win／収益化」要望、Elo 関連、バグ／要望／感想の混在。</p>
+    <p>Lauren は、社内でも類似プロセス。フィードバックをカテゴリ分けして俯瞰。モバイルレイアウト問題が先。AI-only／ランクマッチ問題も。新機能欲と安定性のトレードオフ。光る新機能より <strong>美しい体験を執拗に磨く</strong>。バグはフィードバックのごく一部、と優しいチャットに感謝。</p>
+    <p>ジョークとして、potato 配列ギフト／「Elon が X の新サブスクかも」として、—感謝。OG タグ／SEO preview。リンク共有時にちゃんと見える V1 OG 画像。ビジネスの基本メタ整備。</p>
+      </div>
+  <div class="sub" id="seg03-s11">
+    <h3>補足：Cal Day（Northeastern）ビデオトーク</h3>
+    <p>11:15 に Vincent（マネタイズ／成長）。その前に本番向けビデオ挿入。バグ修正は継続、フィードバック歓迎。玩具ではなく事業にする話へ。</p>
+    <p><strong>Cal Day</strong>（Northeastern、product/engineering 系リーダー） は、Cursor をエージェント・プラットフォームとして使い、職務ごとに特化したエージェントを「席にいる人間」のパートナーに。高速イテレーション → 顧客経済性（ユニットコスト・満足度）。レジリエンス／信頼性／セキュリティは「速くやる」だけでは足りない領域もある、と。</p>
+    <p>「船を焼いた」として、—今年の計画がこれに懸かる。プロダクトは <strong>50M+ 行</strong>規模。モノリス分解の途上。手動検査は絶望的 → Cursor 初期分析が驚異的。従来なら専門家十数人・数ヶ月を、<strong>2人で数週間</strong>級に。顧客影響欠陥の RCA も巨大コーパスに対して加速。</p>
+    <p>次は multi-agent 配備／オーケストレーション。エンジニア／アーキテクトは <strong>エージェント監督</strong>へ。SDLC 全体を再設計中。「Welcome back」のあと cues が細り、<strong>2:44:19</strong> まで欠測（ビデオ残り／切替。音量あり）</p>
+      </div>
+  <div class="sub" id="seg03-s12">
+    <h3>補足：Growth セッションの肉付け</h3>
+    <p>「プロダクトはある。事業にはまだなっていない」として、Vincent から 15–20 分で成長インサイト。Notion の growth playbook に逐次追記する運用そのものがデモ。</p>
+    <p>試合後シェア → 友達をブランドする CTA。カード1枚シェアで別カード獲得、希少性×バイラル。</p>
+    <p>Notion 継続更新、自動 DM 案、アウトバウンドはスパム化しない設計が鍵。Lauren は購読解除疲れに共感。</p>
+      </div>
+</section>
+<section class="seg" id="seg04">
+  <h2>Growth続き・Mattと事業成長</h2>
+  <p class="seg-range">seg04 · ストリーム 3:00–4:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 3:00–4:00（クリップ＝ストリーム−3h）</li>
+    <li><strong>音声</strong>: <code>clips/seg04.mp4</code>（3600s）成功。発話帯 ≈−28〜−33 dB</li>
+    <li><strong>字幕</strong>: 1256 cues。ギャップ <strong>≈3:16:41–3:23:08</strong>（低音量≈−40〜−48dB、発話キュー薄／欠。捏造しない）および短ギャップあり</li>
+    <li><strong>画面</strong>: Vincent Growth 続き → プロモ告知 → BRB → Thursday Arena 再導入＋Matt（マーケ／収益）→ ゲーム歩き＋マネタイズ／アウトバウンド構想</li>
+    <li><strong>注</strong>: Grok Bot / xAI / Thursday Arena / Vincent Zhu（Whisper: Jube 等）/ potato / Motion 正規化。リンクは音声どおり <strong>x.ai/bot</strong>（聞き取り）。</li>
+  </ul></div>
+  <div class="sub" id="seg04-s1">
+    <h3>アウトバウンド／メール・ゲーム類型・Growth リスト化</h3>
+    <figure class="shot">
+      <img src="seg04/t030300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>前セグメント末のスパム疲れ続き。Lauren: 件名フックより <strong>差出人名／ベンダー名</strong>で開封判断しがち → 「誰を知っているか」が鍵。potato 名義メールで信頼を借りる案。ボットに専用メールを持たせる話。</p>
+    <p>成長メカニクスの類型: <strong>match-3（Candy Crush 系）</strong> など他ジャンル参照、広告枠の見せ方。マーケ／成長プランへ戻る。</p>
+      </div>
+  <div class="sub" id="seg04-s2">
+    <h3>Growth 施策のスタックランク・ボットオンボード</h3>
+    <p>ライブで Growth 施策を <strong>レバレッジ高→低</strong>にスタックランク。エージェントにも優先度付けさせ、人間と不一致なら議論。Vincent に「過去に効いた growth」を質問。マーケ vs growth の境界は会社依存。</p>
+    <p>Growth は初見画面・メール文面など「初めて見る人」視点の仕事が多い。スプレッドシート／スライド等の primitive。ボットを会社のやり方にオンボードする時間がレバレッジ（話し方・進め方を教える）</p>
+      </div>
+  <div class="sub" id="seg04-s3">
+    <h3>ダブルプロモ（無料枠）・公式再掲・Vincent 締め</h3>
+    <figure class="shot">
+      <img src="seg04/t031200_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>プロモ2本。ゲームのトップオブファネル＋ Grok Bot 新規。<strong>x.ai/bot</strong>（聞き取り） は、新規が次の15分でサインアップすると特典（午前の1ヶ月無料と同系統の再告知）。「無料配布は最強の growth の一つ」「心を勝つ」</p>
+    <p>Growth＝自分がユーザーならどう扱われたいか。QR 同一コードで案内。</p>
+    <p>公式は <strong>thursdayarena.com</strong> / <strong>@ThursdayArena</strong> のみ（音声ゆれ多数 → 画面・既出表記に正規化）会場 は、Dreamforce 至近、下階メインステージ、上階スタジオ。</p>
+    <p>Vincent（X: Vincent Zhu 系）に感謝、growth アイデア実装へ。フォロー誘導。Vincent 退出。</p>
+      </div>
+  <div class="sub" id="seg04-s4">
+    <h3>低音量／キュー薄（BRB 相当）</h3>
+    <p>音量は完全無音ではないが Whisper cues が薄い。ステージ切替／待機の可能性。<strong>内容捏造なし</strong>。「We are building Thursday Arena」で再開。</p>
+      </div>
+  <div class="sub" id="seg04-s5">
+    <h3>再導入・Matt 参加・自動化で事業成長へ</h3>
+    <figure class="shot">
+      <img src="seg04/t032400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Motion は、Day3、Grok Bot Galaxy＠Dreamforce 隣。ゲストをすぐ紹介。成長ボット／自動化で事業を伸ばす話へ。これまで開発ループ中心だったのを、同じ手法で <strong>grow the business</strong>。</p>
+    <p>Grok Bot で事業全体を組んでいること、auto-build / auto-improve エンジンの再掲。</p>
+      </div>
+  <div class="sub" id="seg04-s6">
+    <h3>Matt にゲーム披露・Platinum・Professor X 比喩</h3>
+    <figure class="shot">
+      <img src="seg04/t033300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Matt（午前メインステージの Marketing Ops 文脈の人物と同一系統／収益・マーケ）にゲームを見せる。裏で UI／バグ修正も進行中のはず。<strong>Thursday Arena</strong> / thursdayarena.com。Login with X or practice。</p>
+    <p><strong>Platinum tier</strong> 到達者 <strong>9人</strong>に Congrats。Lauren の <strong>Inbot</strong> テンプレ（inbox 管理）。チューニングして自分用に、と案内。</p>
+    <p>Growth 思考: <strong>X-Men / Professor X</strong> 比喩（椅子に座り全体を見る＝コンテキストを握るボット／オペレータ像、聞き取りに基づく）</p>
+      </div>
+  <div class="sub" id="seg04-s7">
+    <h3>ボット追加手順・他ゲーム参照・広告／メール</h3>
+    <figure class="shot">
+      <img src="seg04/t034500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>チームに新ボットを足すときの原則（誰の仕事か→どう委任か）他インディー／カジュアルゲームの学び。概念が多く学習コストがある。</p>
+    <p>すぐ <strong>広告（画面スペース販売）</strong> 案に寄る。インプレッションを示して「ライフの一部をシェアして」と営業。コールドメール案: 「短時間でヒットしたゲームを作った」実績をフックに。</p>
+    <p>単純な「広告載せませんか」でも動くことはあるが、ターゲットの信号／データを集めて解像度を上げた方が強い。</p>
+      </div>
+  <div class="sub" id="seg04-s8">
+    <h3>データ／ボット軍団・3,000 matches・パートナーシップ</h3>
+    <figure class="shot">
+      <img src="seg04/t035230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>本番数時間で <strong>3,000 matches 超</strong>。誰のためのプロダクトか（ペルソナ）。会議の合間に遊ぶ層など隣接興味。テンプレでシミュレート可能、と。</p>
+    <p>「ただのボットの群れ」ではなく、文脈を回すチーム。残り約6分で次の話題へ。</p>
+    <p>Apple 系マーケット？（聞き取りゆれ）でメール送信 → Grok Bot が受信箱を監視して広告主の反応を拾う、というオフストリーム実験案。パートナーシップ／マーケ motion を回したい。</p>
+      </div>
+  <div class="sub" id="seg04-s9">
+    <h3>メインステージ接続・エージェントチームとしての Grok Bot</h3>
+    <p>Matt の午前トーク（revenue / marketing options）へ接続。多くのチームを巻き込むユースケースに興奮。</p>
+    <p>「これが Grok Bot。エージェントのチームとして動く」と締めに入り <strong>4:00</strong> 境界。</p>
+      </div>
+  <div class="sub" id="seg04-s10">
+    <h3>補足：Growth 深掘り</h3>
+    <p>potato ブランドでメール信頼を得る／ボットにワーキングメールを持たせる具体。実在の勤務先メールとボット運用の境界（聞き取りやや不明瞭だが「公式感」の話）</p>
+    <p>ゲーム内に広告や他要素を出せるジャンル比較（match-3 等）スタックランク後にエージェントへ投げ、人間の直感と突き合わせるライブ手法そのものがデモ。</p>
+    <p>Vincent は、growth で「出さなきゃいけない数字」のプレッシャー。マーケ寄り制作物 vs growth の実験速度。初見の画面／メールで「何が伝わるか」。オンボーディング文脈。</p>
+    <p>会社で物事を進める作法をボットに教える＝オンボード投資。話し方・進め方を揃えると後が楽。</p>
+      </div>
+  <div class="sub" id="seg04-s11">
+    <h3>補足：プロモ運用の言い回し</h3>
+    <p>午前にも新規ユーザープロモをやったことのリマインド。「無料で配る」は心を掴む growth。どう扱われたいか＝プロダクト原則。</p>
+    <p>Slack 言及は誤認の可能性あり。公式は X の @ThursdayArena と thursdayarena.com（画面・既出に合わせる）Vincent への実装フォロー約束。X ハンドル案内（Vincent Zhu）</p>
+      </div>
+  <div class="sub" id="seg04-s12">
+    <h3>補足：Matt セッション序盤</h3>
+    <p>Motion 自己紹介（product @ xAI）。すぐゲスト。auto-building / auto-improving のエンジンを事業成長側にも転用したい、が今日のテーマ。</p>
+    <p>裏でボットがバグ修正しているかも、と期待しつつウォークスルー。practice でも Login with X でも可。今回はログインしてランキングに乗る。</p>
+    <p>Inbot テンプレ共有・視聴者が自分用にチューニング可能。Professor X の椅子＝全体俯瞰のメタファーで「成長オペを見る席」を説明（音声に基づく）</p>
+    <p>誰のジョブかを決めてからボット化、の手順。新ボット追加時のチェックリスト的な話し方。</p>
+      </div>
+  <div class="sub" id="seg04-s13">
+    <h3>補足：マネタイズ具体・規模感</h3>
+    <p>グッズ／アリーナ・マーチ案が自然に出る。画面広告枠販売が第一候補として浮上。インプレッション数を見せて営業。</p>
+    <p>コールドメールの型: 実績数字（短時間ヒット）→ 広告／提携の打診。ターゲット解像度をデータで上げる（「絵を高解像度に」比喩）</p>
+    <p><strong>3,000+ matches</strong>（数時間）。社会証明に使える。隣接興味（会議の合間に遊ぶ層が他に何を好むか）</p>
+    <p>ペルソナ理解が意思決定を導く。テンプレでシミュレーション。送信後、受信箱監視ボットで「食いつき」を拾うクローズドループ。オフストリームで試す合意。</p>
+    <p>午前の Matt 本編（revops/marops）と接続し、エージェント・チームとしての Grok Bot を再強調して時間切れ。</p>
+      </div>
+  <div class="sub" id="seg04-s14">
+    <h3>補足追記</h3>
+    <p>Growth／マネタイズ議論はスタックランク→エージェント優先度→人間の味付け、が一日の方法論の縮図。Platinum 9名・3,000 matches・コールドメール／広告枠は後続時間の実装バックログに直結。</p>
+    <p>BRB（3:16–3:23）は Vincent 退出→Matt セッション準備の切替。</p>
+      </div>
+  <div class="sub" id="seg04-s15">
+    <h3>補足メモ</h3>
+    <p>Vincent Growth セッションでは施策のスタックランクとエージェント優先度付けがライブで並走した。無料プロモ（x.ai/bot）と Thursday Arena 公式チャネル再掲がトップオブファネル。3:16–3:23 のキュー薄帯は Vincent 退出後の切替。3:23 以降は Matt とゲーム歩き＋広告／コールドメール／3,000 matches の社会証明。</p>
+    <p>Platinum tier 9名・Inbot テンプレ・Professor X 比喩は「成長オペを俯瞰する席」の説明装置。パートナーシップ実験はオフストリーム継続予定として閉じた。</p>
+      </div>
+</section>
+<section class="seg" id="seg05">
+  <h2>Post-Sales（Blake）・円卓メトリクス</h2>
+  <p class="seg-range">seg05 · ストリーム 4:00–5:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 4:00–5:00（クリップ＝ストリーム−4h） / <code>clips/seg05.mp4</code>（3600s）</li>
+    <li><strong>字幕</strong>: 1011 cues。<strong>≈4:46:34–4:53:21 無音/BRB</strong>（mean≈−91 dB）。捏造なし</li>
+    <li><strong>画面</strong>: メインステージ「Grok Bot for Post-Sales」<strong>Blake</strong> → BRB → 円卓（Thursday Arena メトリクス）</li>
+    <li><strong>注</strong>: Blake / Gus / Wally / Frankie / Scout / Trudy / Harbor / Granola / Flylow / Grok Bot / xAI 正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg05-s1">
+    <h3>Post-Sales と Blake の一日 OS</h3>
+    <figure class="shot">
+      <img src="seg05/t040300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>ボットは仮想コンピュータを持ち、作業完了・スクショ／録画・ポッドキャスト等まで可能。「空が限界」。難しいのは <strong>何を終わらせたいか</strong> を考えること。<strong>Post-sales</strong> 本編。Blake = <strong>AI deployment manager</strong>：成約後に顧客が xAI プラットフォームで ROI／成功を見るまで伴走。メール・Slack・Teams・会議が山積み——同職の視聴者には馴染み深い、と。</p>
+    <p>スライドは氷山の一角。詳細は声かけて、と。<strong>Morning Status Board</strong> は、毎日同じ時刻に起きて Grok Bot を見る。当日の会議、昨夜のやり残し、セットアップ。</p>
+    <p><strong>Call prep</strong>（15–20分前 ping） は、誰が出るか、肩書き、前回の会話、その後に出た新機能、持ち出す提案、アンロックが必要なもの。ノート漁り不要。<strong>Follow-up desk</strong>（本日ライブ） は、1日の大半が会議でも、コール終了直後に <strong>Granola</strong> トランスクリプト→文脈→返信下書き→必要資料。人間は確認して送る。</p>
+    <p><strong>Promise keeper</strong> は、「やると言ったこと」を監視。<strong>Ask watch</strong> は、自分が依頼した相手の未返信を深淵から救い出す。</p>
+    <p>今日ウォークスルーする、と予告。少し緊張気味の自己開示。</p>
+      </div>
+  <div class="sub" id="seg05-s2">
+    <h3>Gus チーム・Scout・接続・Flylow デモ仕込み</h3>
+    <p><strong>Gus = best friend / chief of staff</strong>。基本 Gus にだけ話す。Gus が 1–2 人規模の専門ボットを回す。</p>
+    <p><strong>Wally</strong> は声／専門タスクを知る。<strong>Trudy</strong> は本当に必要なとき。セットアップ時は絵文字等で人格を足すのもあり。</p>
+    <p><strong>Scout</strong> = internal radar。アカウント単位でもチームを持つイメージ。</p>
+    <p>Grok Bot はシンプル。Gmail / Calendar / Slack 等に接続。画面を見て学ぶモードも。「今忙しい」設定でデモ開始。</p>
+    <p>Gus に「internal learnings call に代わりに入って」→ 「hey everybody, this is Gus, Blake&#x27;s bot」自社（デモ文脈）<strong>Flylow</strong> のブランディング更新ネタも仕込み。</p>
+      </div>
+  <div class="sub" id="seg05-s3">
+    <h3>Harbor ポストコール・下書きのみ・チャンピオン</h3>
+    <figure class="shot">
+      <img src="seg05/t041200_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Post-call follow-ups が post-sales の肝。アカウント <strong>Harbor</strong>。「Harbor のコール終わった」だけでポストコールパック起動。</p>
+    <p>今日デモ中だと Grok Bot に事前共有済み、というメタ。Gus に足りない専門性は <strong>Wally / Frankie</strong> へリレー（Harbor 担当）</p>
+    <p>Harbor post-call pack ready。<strong>下書きだけ欲しい</strong>ルール（勝手に送らない）文体が自分っぽい、と確認。</p>
+    <p>Alex へ「Harbor と話した」更新。来週 new champions ミーティング。</p>
+    <p>複数アカウント展開。「where we at with Harbor?」の短い発話で Gus が文脈理解。</p>
+      </div>
+  <div class="sub" id="seg05-s4">
+    <h3>軽口・SSO フォロー・同僚投資・学習ループ</h3>
+    <figure class="shot">
+      <img src="seg05/t042400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>「How do you organize a space party?」など軽めのデモ。作業中に takes タブを見せる。</p>
+    <p>Harbor の <strong>SSO</strong> 案件。フォロー文「protect the cap」「今すぐ出す」「余裕があれば SSO」。Scout が同意し会話が続く。送信完了。</p>
+    <p><strong>Grok Bot への投資≒同僚／直属への投資</strong>。差分を Wally に戻しルール更新——継続学習。</p>
+    <p>「自分が圧倒されるポイント」を Gus に教えたプロンプト。</p>
+      </div>
+  <div class="sub" id="seg05-s5">
+    <h3>Q&amp;A：VM・マネジメント限界・sprawl・router・幻覚・aha</h3>
+    <figure class="shot">
+      <img src="seg05/t043300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg05/t044500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>他ソフトも？ → 多くの場合 VM に直接インストール可。人と話す時間が好き——その時間を守るために後処理をボットへ。</p>
+    <p>良いマネージャと同様、一度に見られる範囲には限界。委任と信頼を段階拡大。テンプレ磨き／移行時の参照残り／<strong>bot sprawl</strong>。</p>
+    <p>Grok Bot をエージェントの <strong>router</strong> に？ → 未観測だが興味。トレース可能性。何が終わったかの分析を頼む。</p>
+    <p>巨大プロンプトの hallucination？ → Grok Bot ではあまり感じない。まず蒸留してから深掘り。最大 aha: <strong>内部会議への代理参加</strong>。「複数の場所にいる」感覚。時間がない問題と同系統でトーク終了。</p>
+      </div>
+  <div class="sub" id="seg05-s6">
+    <h3>無音 / BRB</h3>
+    <figure class="shot">
+      <img src="seg05/t045230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>mean≈−91 dB。ステージ切替。発言なし。</p>
+      </div>
+  <div class="sub" id="seg05-s7">
+    <h3>円卓：1000 users / 3500 practice / ファネル議論</h3>
+    <p>復帰。10am がピーク。ボット要約: <strong>1000+ users</strong>、<strong>3500 practice</strong>、勝率 <strong>47%</strong>（エンジン調整余地）ファネルは今は急がない理由: サインイン強制の強い理由がまだ弱い／practice でも楽しい／計測定義（practice 中の Login with X）を疑う必要。次ウェーブで signed-in 向けエンゲージを厚くする。</p>
+    <p>サインアップ／practice 開始の時系列。growth グラフに驚き。ゲームデザイン／3D／グラフィックボット稼働。</p>
+    <p>プレイ中ユーザー <strong>ティッカー</strong>を配信中に追加。改善デモ要求で 5:00 へ。</p>
+      </div>
+</section>
+<section class="seg" id="seg06">
+  <h2>オートバトラー磨き・大企業・Dan</h2>
+  <p class="seg-range">seg06 · ストリーム 5:00–6:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 5:00–6:00 / 935 cues / 音声OK（終盤やや静か）</li>
+    <li><strong>画面</strong>: Thursday Arena プレイ実況・工場／Potato Mode・ボイスエージェント・マネタイズ・ゲスト Dan → Marketing へ</li>
+    <li><strong>注</strong>: auto-battler / Potato Mode / peestack / Vincent / Dan / Grok Bot / Thursday Arena 正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg06-s1">
+    <h3>モバイル・ティッカー・オートバトラー解説</h3>
+    <figure class="shot">
+      <img src="seg06/t050300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>「本当に mobile friendly」。ダメならフィードバックを。UI 大量改修。ボタン配置の残り課題。下部ティッカー好評。</p>
+    <p>「このゲーム何？」→ <strong>auto-battler</strong> に着地。ボットチームをドラフトし、相手チームとマッチ。各ボットに能力／ステータス。</p>
+    <p>順序付きラインナップ（例: 3体）。相手並びに対向。残存が多い側がラウンド勝利。ターンごとにアビリティが順に解決。</p>
+    <p>対戦前に相手の数値（例 3/5 と 3/3）が見える。自カード能力が見えにくい UI 課題 → エンジニアに相談。</p>
+      </div>
+  <div class="sub" id="seg06-s2">
+    <h3>試合・SFX・シェア勝ち・Potato Mode 修正</h3>
+    <p>現行ラインナップで試合。SFX／疑似バトル音楽を戻したい。午前の Vincent（Growth）会話を想起。</p>
+    <p>Cloud agent + <strong>Potato Mode</strong>: 勝利シェア機能を実装せよ、と指示。ロビーカード配置も修正中。</p>
+    <p>ティッカーがボタンを隠すバグ → 修正依頼。結果画面も。</p>
+    <p>Potato Mode で inspect→fix。「コードを書く前に調査」を明示。エージェントが画面を歩きスクショでバグ特定——コード未経験者にも楽しい、と。</p>
+      </div>
+  <div class="sub" id="seg06-s3">
+    <h3>Feedback ボタン・xAI ボイスエージェント</h3>
+    <figure class="shot">
+      <img src="seg06/t051200_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>ホームの <strong>Send feedback</strong>。バグや要望を送って、と。確認できれば自動修正まで。<strong>xAI voice agents</strong> の遊び。電話応答エージェントを GUI で素早くデプロイできるデモ。モデレーション同様のガードレール。</p>
+    <p>視聴者の温かい言葉をボイス経由で受け、チームへ転送された、という実演。</p>
+      </div>
+  <div class="sub" id="seg06-s4">
+    <h3>大企業オペ・エスカレーション・自ボット投入</h3>
+    <figure class="shot">
+      <img src="seg06/t052400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>自動化で少人数が大企業のように回る。ユーザー代理行動／escalate issue ツール構想。</p>
+    <p>チャンネル命名、プラン作成支援。Lauren が社内プロダクトでも同種セットアップ。</p>
+    <p><strong>自分の Grok Bot をゲームにインポート</strong>する案。UI polish エージェント稼働。Cursor で並行作業。</p>
+      </div>
+  <div class="sub" id="seg06-s5">
+    <h3>デザイン知識・ヒューマンタッチ・課金摩擦・カード＝実ボット</h3>
+    <figure class="shot">
+      <img src="seg06/t053300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>ベース UI／Radix 等の語彙があると指示が楽。<strong>human touch</strong> も残す、と。</p>
+    <p>小さな課金（例 $10 パック）でも決済・メール・プロビジョニングが面倒。エージェントを回しても最後に手動が残る問題。practice のカードは実在 Grok Bot キャラがモチーフ。動作 OK。</p>
+      </div>
+  <div class="sub" id="seg06-s6">
+    <h3>GTM ボット・計画の言い直し・Dan・UVP</h3>
+    <figure class="shot">
+      <img src="seg06/t054500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg06/t055230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>GTM／マネタイズアイデア記録ボット。公式ボットのフィーチャー、ロールアウト中機能のティーズ。</p>
+    <p>エージェントに <strong>計画を自分の言葉で言い直させる</strong>（Lauren の技）有料マルチチーム戦など。</p>
+    <p>ゲスト <strong>Dan</strong>（X ハンドル画面表示）。工場が回っている様子。コンシューマ／UVP の話で締め、次の Marketing 本編へ橋渡し。</p>
+      </div>
+</section>
+<section class="seg" id="seg07">
+  <h2>Josh Marketing・円卓復帰</h2>
+  <p class="seg-range">seg07 · ストリーム 6:00–7:00</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 6:00–7:00 / 1384 cues（高密度）/ 音声OK</li>
+    <li><strong>画面</strong>: Dan 締め → <strong>Josh Kim — Grok Bot for Marketing</strong> → Q&amp;A → 円卓復帰</li>
+    <li><strong>注</strong>: Josh Kim / Grok Bot / xAI / MCP / Thursday Arena 正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg07-s1">
+    <h3>カットオーバー</h3>
+    <p>Dan の 3JS／テンプレ話の流れ。X ハンドルを画面に出しフォロー誘導。Dreamforce 隣メインステージへ。<strong>Josh Kim</strong>「Grok Bot for Marketing」。戻ってきて続き、と予告。</p>
+      </div>
+  <div class="sub" id="seg07-s2">
+    <h3>Josh：thought → doing、ジョブ単位ボット</h3>
+    <figure class="shot">
+      <img src="seg07/t060300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Josh Kim。xAI マーケでの使い方と、視聴者がチームで始める方法。多くの人の AI は 1–2 チャットを <strong>thought partner</strong>（質問・戦略・コピー）に留まる。<strong>doing partner</strong> ではない。</p>
+    <p>汎用／特化エージェントの台頭。Grok Bot でマーケが実際に仕事を進められる。<strong>always-on 非同期チームメイト</strong>。自動化だけでなく <strong>ボットのチーム</strong>にやらせる。</p>
+    <p>ジョブごとに個別ボット。使い続けるほど自分の働き方にカスタムされる。MCP 等でツール接続し、人間と同じようにツールを使える点が独自。他ツールとの違い／シンプルさ。</p>
+      </div>
+  <div class="sub" id="seg07-s3">
+    <h3>エンドツーエンド・キャンペーン・職能ボット</h3>
+    <figure class="shot">
+      <img src="seg07/t061200_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>ゼロからエンドツーエンドでマーケキャンペーンをローンチするデモ。舞台裏の多さ。従来は人が職能間でパスする。</p>
+    <p>Josh のマーケ「チーム」: プロダクトマーケ、Web ops、パフォーマンス、アナリスト、PM 等（全部自分で作ったわけではない、と正直）ホームページをピン留めし、市場理解から開始。</p>
+    <p>Market researcher が競合サイト／ポジショニングを見る。<strong>dictator prompt</strong>（一気に指示）も使用。一人のボットと深くやる／職能ボットに渡すハイブリッド。</p>
+    <p>「新機能キャンペーンを出す」型の依頼。Market researcher 完了 → Product marketer へ。複数マーケ面（2–3 surfaces）。ボット間コラボ開始。</p>
+      </div>
+  <div class="sub" id="seg07-s4">
+    <h3>分析引き継ぎ・LP・本番シップ</h3>
+    <p>Market researcher の分析を次ボットが掴んだ、と実況。ポジショニング／パッケージングの議論。</p>
+    <p>LP 反映・ランディング公開の流れ。シェルキャンペーン開始。進捗モニタ継続指示。</p>
+    <p>マーケサイトへ新 LP をシップ。本番シップまで行ける、と強調。</p>
+      </div>
+  <div class="sub" id="seg07-s5">
+    <h3>運用・単一接点・原則・Thank you</h3>
+    <figure class="shot">
+      <img src="seg07/t062400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>成果物のコピー利用、今週すでに出したキャンペーンの続きをアナリストへ、ボット内でキャンペーン構築。そのボットを唯一の接点にする。</p>
+    <p>学びの振り返り。任せる／監督する原則の再掲。Thank you / 拍手。</p>
+      </div>
+  <div class="sub" id="seg07-s6">
+    <h3>Q&amp;A</h3>
+    <figure class="shot">
+      <img src="seg07/t063300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>王国の鍵は渡さない——権限。最大ブロッカーは？</p>
+    <p>ただの別 LLM 扱いするな。イニシアチブをグループチャットで回す比喩／簡単導入。</p>
+    <p>Grok Bot ↔ grok CLI？企業アルファ／機密漏洩の garanty は？</p>
+    <p>クールな反応で Q&amp;A 終盤。</p>
+      </div>
+  <div class="sub" id="seg07-s7">
+    <h3>円卓復帰</h3>
+    <figure class="shot">
+      <img src="seg07/t064500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg07/t065230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>新機能を大量実装中。今日の作業の説明、サインアップ／Sign in with X。</p>
+    <p>反応と軽い挨拶で 7:00 へ。</p>
+      </div>
+</section>
+<section class="seg" id="seg08">
+  <h2>最終時間・工場デモ・クロージング</h2>
+  <p class="seg-range">seg08 · ストリーム 7:00–終了</p>
+  <div class="seg-meta"><ul>
+    <li><strong>範囲</strong>: 7:00–end（≈3501s）/ 1201 cues</li>
+    <li><strong>欠測</strong>: <strong>≈7:18:13–7:28:30</strong> 低音量・キュー薄（≈−38〜−40 dB）。後で「10分休憩」と説明。捏造なし</li>
+    <li><strong>画面</strong>: プレイ／インポート・工場・最終ラップ・メトリクス・Dr.Eggbot・クロージング</li>
+    <li><strong>注</strong>: Dr.Eggbot / Eric / Grok Bot / Thursday Arena / potato / Motion 正規化。</li>
+  </ul></div>
+  <div class="sub" id="seg08-s1">
+    <h3>ボット増殖・Import・ドラフト実況</h3>
+    <figure class="shot">
+      <img src="seg08/t070300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>気が散りやすい、という個人的導入。当初1ボット → PM ボット等が spawn。Notion 連携の話。</p>
+    <p>Eric 説明のボットを URL から <strong>Import</strong>。ゲーム内ボットは実在 Grok Bot がモデル。能力例（最前列+2攻撃等）。コモンはトークンコスト。</p>
+    <p>インセクト等のカードがプールからランダム。強いカード／パワーアップ（りんご購入等）頻出バグ報告あり。</p>
+    <p>スロットへドラッグ。トークン残7。意図的に速くシップ（バグも出るが速さ優先だった）</p>
+    <p>「勝つ」実況。再戦。見た目とクリック先の不一致バグ等。</p>
+      </div>
+  <div class="sub" id="seg08-s2">
+    <h3>音楽・ティッカー有料化ネタ・ボイス・工場</h3>
+    <figure class="shot">
+      <img src="seg08/t071200_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Spotify。広告ティッカー案。</p>
+    <p>課金で特別色、等。下部ティッカーがお気に入り機能の一つ。</p>
+    <p>xAI ボイスエージェント利用。Matt のプロダクション画面。修正をスピンアップ中。</p>
+    <p>Cursor プロジェクト。UI リフレッシュ。</p>
+    <p>loop ボット＝エンジニアリング寄り。探索をスクショ／動画付きで X 投稿するボット案。</p>
+    <p>以降キューが細り休憩帯へ。</p>
+      </div>
+  <div class="sub" id="seg08-s3">
+    <h3>休憩／キュー薄</h3>
+    <figure class="shot">
+      <img src="seg08/t072400_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>低音量。発話キューほぼなし。最終時間宣言で再開。</p>
+      </div>
+  <div class="sub" id="seg08-s4">
+    <h3>最終時間・$200 クレジット・工場デモ</h3>
+    <figure class="shot">
+      <img src="seg08/t073300_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>Day3 最終時間。ゼロから事業を Grok Bot で。強く締めたい。チャット向けプロモ: 当日中 <strong>$200 相当 Grok Bot クレジット</strong>（聞き取り）。熱いうちに。</p>
+    <p>「これで会社が建つ」「ちょうど10分休憩した」</p>
+    <p>Lauren は、アニメ改善を Matt に見せ PR 予定。フィードバック監視→ Cursor cloud agents。静的な過去マッチ等の repro／テスト後マージ。API キー露出に注意、と実況。</p>
+      </div>
+  <div class="sub" id="seg08-s5">
+    <h3>ラップ・tutorial・学び・unship</h3>
+    <figure class="shot">
+      <img src="seg08/t074500_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p>一日ラップアップ用にボットへ指示。<strong>Dr.Eggbot</strong>（ボット作成ボット）のディシプリン。</p>
+    <p>プレイ <strong>tutorial</strong> がようやく。フィードバック取得システム全体。</p>
+    <p>人に届くものを作る／パートナーシップ／セールスの必要性。「どう仕事を終わらせるか」が強力。</p>
+    <p>次を速くシップすると同時に、何を <strong>unship</strong> するか。コアループに集中できてきた。最終質問へ。</p>
+      </div>
+  <div class="sub" id="seg08-s6">
+    <h3>最終メトリクス・Dr.Eggbot・Thanks</h3>
+    <figure class="shot">
+      <img src="seg08/t075230_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <figure class="shot">
+      <img src="seg08/t075700_f.jpg" alt="stream frame" loading="lazy"/>
+      <figcaption>stream frame</figcaption>
+    </figure>
+        <p><strong>最終メトリクス</strong>。サインアップ感謝。あと数分。</p>
+    <p>@grok 等。potato は、<strong>Dr.Eggbot</strong> にボット作成を任せてきた振り返り。</p>
+    <p>ゲームスタジオが「それなりに」建った。マネタイズ要素の最終チェック。</p>
+    <p>Thanks。オーナーシップの軽いやり取り。「theoretical leadership」ジョークで終盤（≈7:58:21）</p>
+      </div>
+</section>
+
+<p class="footer-note">
+  本文は <code>notes-seg*.md</code> の事実を落としつつ、時刻ラベルを外して段落化したものです。ノートにない事実は追加していません。
+  画像は記述的ファイル名を優先し、自動連番ファイル名は埋め込んでいません。
+</p>
+</article>
+</div>
+<script>
+
+(function(){
+  const bar = document.querySelector('.progress');
+  const chips = [...document.querySelectorAll('.chips a')];
+  const tocLinks = [...document.querySelectorAll('#toc a[href^="#seg"]')];
+  function onScroll(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    if (bar) bar.style.width = p + '%';
+    let current = null;
+    for (const a of tocLinks) {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) current = id;
+    }
+    tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    chips.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+</script>
+</body>
+</html>
